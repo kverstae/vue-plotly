@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { Plotly } from "@/index.js";
 import PlotlyDirect from "@/components/Plotly.vue";
 

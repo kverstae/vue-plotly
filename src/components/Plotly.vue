@@ -6,15 +6,18 @@ import Plotly from "plotly.js";
 import events from "./events.js";
 import methods from "./methods.js";
 import { camelize } from "@/utils/helper";
+import resize from "vue-resize-directive";
 
 const directives = {};
 if (typeof window !== "undefined") {
   directives.resize = require("vue-resize-directive");
 }
 export default {
-  name: "plotly",
+  name: "plotly-wrapper",
   inheritAttrs: false,
-  directives,
+  directives: {
+    resize
+  },
   props: {
     data: {
       type: Array
@@ -73,7 +76,7 @@ export default {
       };
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     events.forEach(event => this.$el.removeAllListeners(event.completeName));
     Plotly.purge(this.$el);
   },

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { shallowMount } from "@vue/test-utils";
 import Plotly from "@/components/Plotly.vue";
 import plotlyjs from "plotly.js";
@@ -46,7 +50,7 @@ const methods = ["restyle", "relayout", "update", "addTraces", "deleteTraces", "
 function shallowMountPlotty() {
   jest.clearAllMocks();
   return shallowMount(Plotly, {
-    propsData: {
+    props: {
       layout,
       data,
       id
@@ -84,16 +88,8 @@ describe("Plotly.vue", () => {
     expect(Plotly.props).toEqual(props);
   });
 
-  it("renders a div", () => {
-    expect(wrapper.is("div")).toBe(true);
-  });
-
-  it("sets id on div", () => {
-    expect(wrapper.is(`#${id}`)).toBe(true);
-  });
-
-  it("sets id on div", () => {
-    expect(wrapper.is(`#${id}`)).toBe(true);
+  it("renders a div with id", () => {
+    expect(wrapper.html()).toEqual('<div id="id"></div>');
   });
 
   it("calls plotly newPlot", () => {
@@ -183,7 +179,7 @@ describe("Plotly.vue", () => {
 
   describe.each([
     ["data", wrapper => wrapper.setProps({ data: [{ data: "novo" }] })],
-    ["attr", wrapper => (wrapper.vm.$attrs = { displayModeBar: "hover" })]
+    ["attr", wrapper => (wrapper.vm.attrs = { displayModeBar: "hover" })]
   ])("when %p changes", (_, changeData) => {
     describe.each([
       ["once", changeData],
@@ -226,7 +222,7 @@ describe("Plotly.vue", () => {
       console.error = () => {};
       jest.clearAllMocks();
       wrapper.setProps({ data: [{ data: "novo" }] });
-      wrapper.vm.$attrs = { displayModeBar: "hover" };
+      wrapper.vm.attrs = { displayModeBar: "hover" };
     });
     afterEach(() => {
       console.error = error;
@@ -250,8 +246,8 @@ describe("Plotly.vue", () => {
     beforeEach(() => {
       console.error = () => {};
       jest.clearAllMocks();
-      const attrs = Object.assign({}, vm.$attrs);
-      vm.$attrs = attrs;
+      const attrs = Object.assign({}, vm.attrs);
+      vm.attrs = attrs;
     });
     afterEach(() => {
       console.error = error;
@@ -385,9 +381,9 @@ describe("Plotly.vue", () => {
     });
   });
 
-  describe("when destroyed", () => {
+  describe("when unmounted", () => {
     beforeEach(() => {
-      wrapper.destroy();
+      wrapper.unmount();
     });
 
     it("calls plotly purge", () => {
